@@ -1,16 +1,37 @@
-# React + Vite
+# ResultsCX Supervisor Intelligence
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive supervisor analytics prototype for healthcare contact center QA. It uses realistic, anonymized mock evaluations and simulated AI hypotheses. There is no backend or Amazon Bedrock connection in this version.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Open the local URL printed by Vite. Use `npm run build` and `npm run lint` for checks.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What to explore
 
-## Expanding the ESLint configuration
+- **Overview:** team QA metrics, weekly score trend, issue frequencies, and agents to review.
+- **Issue explorer:** select a pattern, compare affected agents, inspect source evaluations, and read a mock root-cause hypothesis.
+- **Agents:** compare performance, then inspect one agent’s flagged and strong evaluations.
+- **Evidence library:** search and filter evaluations, open the source comment, and identify the human validation point.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The team, time range, and search controls apply across the workspace. The mock dataset includes repeated issues, isolated flags, high performers, a low sample case, and mixed signals.
+
+## Structure and Bedrock handoff
+
+```text
+src/
+  App.jsx                         Supervisor views and interactions
+  App.css, index.css              Responsive design system
+  components/BrandLogo.jsx       Hosted brand asset with text fallback
+  data/mockData.js                Anonymized QA records
+  services/analyticsService.js   Filter and aggregate interface
+  services/mockAnalysisService.js Simulated AI analysis interface
+```
+
+The UI calls `mockAnalysisService.analyzeIssue(issueId, evaluations)` and `mockAnalysisService.analyzeAgent(agentId, evaluations)`. A future API-backed service can implement these methods and return the same result shapes. Keep Bedrock calls and credentials on the server; the frontend should call that API. `analyticsService` can likewise be replaced with API queries when real QA records are available.
+
+All AI text is explicitly presented as a hypothesis for supervisor validation. It does not make personnel decisions.
